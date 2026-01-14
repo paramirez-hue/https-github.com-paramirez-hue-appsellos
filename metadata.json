@@ -1,0 +1,7 @@
+{
+  "name": "App sellos ",
+  "description": "Sistema avanzado para el manejo y control de inventario de precintos de seguridad (sellos), inspirado en flujos de logística industrial.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
