@@ -118,13 +118,13 @@ const DashboardView: React.FC<{ seals: Seal[]; user: User; cities: string[] }> =
     <div className="space-y-10 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h3 className="text-3xl font-black text-custom-blue uppercase tracking-tighter italic">Centro de Operaciones</h3>
+          <h3 className="text-3xl font-black text-custom-blue uppercase tracking-tighter italic">Dashboard de Operaciones</h3>
           <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Estadísticas en Tiempo Real - Sede: <span className="text-custom-blue">{user.city}</span></p>
         </div>
         <div className="bg-white px-6 py-3 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
           <div className="text-right">
             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Estado Global</p>
-            <p className="text-sm font-black text-custom-blue uppercase tracking-tighter">RED OPERATIVA ACTIVA</p>
+            <p className="text-sm font-black text-custom-blue uppercase tracking-tighter">ACTIVA</p>
           </div>
           <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
         </div>
