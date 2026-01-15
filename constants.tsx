@@ -108,7 +108,7 @@ export const MOCK_USERS: User[] = [
 
 export const MOCK_DATA: Seal[] = [
   { 
-    id: 'BOG-001', 
+    id: 'B001', 
     type: 'Botella', 
     status: SealStatus.SALIDA_FABRICA, 
     creationDate: '14/01/2026 07:45:36', 
