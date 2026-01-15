@@ -298,7 +298,7 @@ const SettingsView: React.FC<{
 
   return (
     <div className="space-y-8 animate-in slide-in-from-right-4 duration-500">
-      <div><h3 className="text-2xl font-black text-custom-blue uppercase tracking-tighter italic">Configuración Maestro</h3><p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Personalice la identidad corporativa y parámetros globales</p></div>
+      <div><h3 className="text-2xl font-black text-custom-blue uppercase tracking-tighter italic">CONFIGURACIONES</h3><p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Personalice la identidad corporativa y parámetros globales</p></div>
       
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-10 space-y-10 max-w-4xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -444,7 +444,7 @@ const UserManagement: React.FC<{
     if (!formData.username || !formData.password) return alert('Usuario y contraseña obligatorios');
     if (editingUser) onUpdateUser({ ...editingUser, ...formData });
     else {
-      const u: User = { ...formData, id: Math.random().toString(36).substr(2, 9), organization: 'Logistic Global' };
+      const u: User = { ...formData, id: Math.random().toString(36).substr(2, 9), organization: 'Compañia Nacional de Chocolates' };
       onAddUser(u);
     }
     setIsModalOpen(false); setEditingUser(null);
@@ -559,14 +559,14 @@ const MovementsView: React.FC<{
       {foundSeals.length > 0 && allFound && commonStatus !== 'MIXED' ? (
         <div className="max-w-2xl bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-in zoom-in duration-200">
           <div className="bg-custom-blue px-8 py-4 text-white flex justify-between items-center"><p className="text-[10px] font-black uppercase tracking-widest">{foundSeals.length > 1 ? `OPERACIÓN POR LOTE (${foundSeals.length} UNIDADES)` : `ID: ${foundSeals[0].id}`}</p><p className="text-[10px] font-black uppercase tracking-widest">Sede: {user.city}</p></div>
-          <div className="p-8 space-y-6"><div className="text-center space-y-2"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado Actual del Lote</p><div className={`p-3 rounded-2xl border-2 text-center font-black text-xl uppercase shadow-inner transition-all duration-500 ${getStatusStyles(commonStatus as SealStatus).split('icon-bg-')[0]}`}>{(commonStatus as SealStatus).replace('_', ' ')}</div></div>
+          <div className="p-8 space-y-6"><div className="text-center space-y-2"><p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estado Actual del Sello</p><div className={`p-3 rounded-2xl border-2 text-center font-black text-xl uppercase shadow-inner transition-all duration-500 ${getStatusStyles(commonStatus as SealStatus).split('icon-bg-')[0]}`}>{(commonStatus as SealStatus).replace('_', ' ')}</div></div>
             {!isFinal ? (
-              <div className="space-y-4"><p className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Seleccione el Cambio de Estado para el Lote</p><div className="grid grid-cols-1 gap-2">
-                  {(commonStatus === SealStatus.ENTRADA_INVENTARIO || commonStatus === SealStatus.NO_INSTALADO) && <button onClick={() => onInitiateMove(foundSeals, SealStatus.ASIGNADO)} className="bg-sky-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Asignar Lote a Pedido</button>}
-                  {commonStatus === SealStatus.ASIGNADO && <button onClick={() => onInitiateMove(foundSeals, SealStatus.ENTREGADO)} className="bg-amber-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Entregar Despacho del Lote</button>}
-                  {commonStatus === SealStatus.ENTREGADO && (<><button onClick={() => onInitiateMove(foundSeals, SealStatus.INSTALADO)} className="bg-orange-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Confirmar Instalación de Lote</button><button onClick={() => onInitiateMove(foundSeals, SealStatus.NO_INSTALADO)} className="bg-stone-500 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Reportar No Instalado (Reutilizar)</button></>)}
-                  {commonStatus === SealStatus.INSTALADO && <button onClick={() => onInitiateMove(foundSeals, SealStatus.SALIDA_FABRICA)} className="bg-gray-500 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Liberar Salida Lote (Final)</button>}
-                  <button onClick={() => onInitiateMove(foundSeals, SealStatus.DESTRUIDO)} className="bg-red-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Reportar Lote Destruido</button>
+              <div className="space-y-4"><p className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Seleccione el Cambio de Estado para el Sello</p><div className="grid grid-cols-1 gap-2">
+                  {(commonStatus === SealStatus.ENTRADA_INVENTARIO || commonStatus === SealStatus.NO_INSTALADO) && <button onClick={() => onInitiateMove(foundSeals, SealStatus.ASIGNADO)} className="bg-sky-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Asignar Sello a Pedido</button>}
+                  {commonStatus === SealStatus.ASIGNADO && <button onClick={() => onInitiateMove(foundSeals, SealStatus.ENTREGADO)} className="bg-amber-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Entregar Despacho del Sello</button>}
+                  {commonStatus === SealStatus.ENTREGADO && (<><button onClick={() => onInitiateMove(foundSeals, SealStatus.INSTALADO)} className="bg-orange-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Confirmar Instalación de Sello</button><button onClick={() => onInitiateMove(foundSeals, SealStatus.NO_INSTALADO)} className="bg-stone-500 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Reportar No Instalado (Reutilizar)</button></>)}
+                  {commonStatus === SealStatus.INSTALADO && <button onClick={() => onInitiateMove(foundSeals, SealStatus.SALIDA_FABRICA)} className="bg-gray-500 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Liberar Salida Sello (Final)</button>}
+                  <button onClick={() => onInitiateMove(foundSeals, SealStatus.DESTRUIDO)} className="bg-red-600 text-white p-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:scale-[1.01] transition-all">Reportar Sello Destruido</button>
                 </div></div>
             ) : <div className="bg-slate-50 p-6 rounded-2xl border-2 border-dashed border-slate-200 text-center space-y-4 animate-in zoom-in"><p className={`text-sm font-black uppercase tracking-widest transition-colors ${getStatusTextColor(commonStatus as SealStatus)}`}>Ciclo operativo finalizado ({(commonStatus as SealStatus).replace('_', ' ')})</p></div>}
           </div>
