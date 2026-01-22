@@ -67,6 +67,24 @@ const getStatusTextColor = (status: SealStatus) => {
   }
 };
 
+// --- COLOR HELPERS ---
+
+const darkenColor = (hex: string, amount: number) => {
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `#${Math.max(0, r - amount).toString(16).padStart(2, '0')}${Math.max(0, g - amount).toString(16).padStart(2, '0')}${Math.max(0, b - amount).toString(16).padStart(2, '0')}`;
+};
+
+const lightenColor = (hex: string, amount: number) => {
+  hex = hex.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `#${Math.min(255, r + amount).toString(16).padStart(2, '0')}${Math.min(255, g + amount).toString(16).padStart(2, '0')}${Math.min(255, b + amount).toString(16).padStart(2, '0')}`;
+};
+
 // --- EXPORT FUNCTIONS ---
 
 const exportToExcel = (data: any[], fileName: string) => {
@@ -220,7 +238,7 @@ const DashboardView: React.FC<{ seals: Seal[]; user: User; cities: string[] }> =
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold' }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold' }} />
                 <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="cantidad" fill="#003594" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="cantidad" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -230,7 +248,7 @@ const DashboardView: React.FC<{ seals: Seal[]; user: User; cities: string[] }> =
   );
 };
 
-// --- SETTINGS VIEW WITH DB MANAGEMENT ---
+// --- SETTINGS VIEW WITH DB AND THEME MANAGEMENT ---
 
 const SettingsView: React.FC<{ 
   settings: AppSettings; 
@@ -241,8 +259,18 @@ const SettingsView: React.FC<{
   const [logoPreview, setLogoPreview] = useState<string | null>(settings.logo);
   const [newType, setNewType] = useState('');
   const [sealTypes, setSealTypes] = useState<string[]>(settings.sealTypes);
+  const [themeColor, setThemeColor] = useState(settings.themeColor || '#003594');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dbFileRef = useRef<HTMLInputElement>(null);
+
+  const presetColors = [
+    { name: 'Azul Original', hex: '#003594' },
+    { name: 'Rojo Corporativo', hex: '#c21b1b' },
+    { name: 'Verde Logística', hex: '#0c8444' },
+    { name: 'Negro Premium', hex: '#111827' },
+    { name: 'Naranja Alerta', hex: '#ea580c' },
+    { name: 'Púrpura Operativo', hex: '#6d28d9' }
+  ];
 
   const addSealType = () => {
     if (newType.trim() && !sealTypes.includes(newType.trim().toUpperCase())) { setSealTypes([...sealTypes, newType.trim().toUpperCase()]); setNewType(''); }
@@ -258,7 +286,10 @@ const SettingsView: React.FC<{
     }
   };
 
-  const handleSave = () => { onUpdate({ title, logo: logoPreview, sealTypes }); alert('Configuración guardada satisfactoriamente.'); };
+  const handleSave = () => { 
+    onUpdate({ title, logo: logoPreview, sealTypes, themeColor }); 
+    alert('Configuración guardada satisfactoriamente.'); 
+  };
 
   const handleExportDB = () => {
     const dbData = {
@@ -321,6 +352,53 @@ const SettingsView: React.FC<{
           </div>
         </div>
 
+        {/* THEME COLOR SECTION */}
+        <div className="pt-6 border-t border-slate-100">
+          <label className="text-[10px] font-black text-custom-blue uppercase tracking-widest block mb-4">Personalización del Tema Visual</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-4">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Color Principal</p>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="color" 
+                  value={themeColor} 
+                  onChange={(e) => setThemeColor(e.target.value)}
+                  className="w-12 h-12 rounded-xl cursor-pointer border-2 border-slate-200 overflow-hidden"
+                />
+                <input 
+                  type="text" 
+                  value={themeColor.toUpperCase()} 
+                  onChange={(e) => setThemeColor(e.target.value)}
+                  className="bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg font-mono text-xs font-bold text-custom-blue w-24"
+                />
+              </div>
+            </div>
+            <div className="md:col-span-2 space-y-4">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Paleta Predefinida</p>
+              <div className="flex flex-wrap gap-3">
+                {presetColors.map(color => (
+                  <button 
+                    key={color.hex} 
+                    onClick={() => setThemeColor(color.hex)}
+                    className="group flex flex-col items-center gap-2"
+                    title={color.name}
+                  >
+                    <div 
+                      className={`w-10 h-10 rounded-full border-2 transition-transform hover:scale-110 ${themeColor.toLowerCase() === color.hex.toLowerCase() ? 'border-custom-blue ring-2 ring-blue-100 ring-offset-2' : 'border-transparent'}`}
+                      style={{ backgroundColor: color.hex }}
+                    ></div>
+                    <span className="text-[8px] font-black text-slate-400 uppercase opacity-0 group-hover:opacity-100 transition-opacity">{color.name.split(' ')[0]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-4">
+            <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: themeColor }}></div>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider italic">Vista previa: Este color se aplicará a botones, encabezados y elementos clave de la interfaz.</p>
+          </div>
+        </div>
+
         <div className="space-y-4">
           <label className="text-[10px] font-black text-custom-blue uppercase tracking-widest block">Catálogo de Precintos</label>
           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -362,8 +440,7 @@ const SettingsView: React.FC<{
   );
 };
 
-// ... Rest of components (CityManagement, UserManagement, LoginScreen, etc.) ...
-// Keep existing CityManagement and UserManagement as they were in the previous version
+// ... Rest of components (CityManagement, UserManagement, etc.) ...
 
 const CityManagement: React.FC<{ 
   cities: string[]; 
@@ -444,7 +521,7 @@ const UserManagement: React.FC<{
     if (!formData.username || !formData.password) return alert('Usuario y contraseña obligatorios');
     if (editingUser) onUpdateUser({ ...editingUser, ...formData });
     else {
-      const u: User = { ...formData, id: Math.random().toString(36).substr(2, 9), organization: 'Compañia Nacional de Chocolates' };
+      const u: User = { ...formData, id: Math.random().toString(36).substr(2, 9), organization: 'SelloMaster Group' };
       onAddUser(u);
     }
     setIsModalOpen(false); setEditingUser(null);
@@ -610,8 +687,17 @@ export default function App() {
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [isDeleteModeActive, setIsDeleteModeActive] = useState(false);
   
-  const [appSettings, setAppSettings] = useState<AppSettings>({ title: 'SelloMaster Pro', logo: null, sealTypes: ['Botella', 'Cable', 'Plástico', 'Metálico'] });
+  const [appSettings, setAppSettings] = useState<AppSettings>({ title: 'SelloMaster Pro', logo: null, sealTypes: ['Botella', 'Cable', 'Plástico', 'Metálico'], themeColor: '#003594' });
   const fileExcelRef = useRef<HTMLInputElement>(null);
+
+  // Apply theme colors to CSS variables
+  useEffect(() => {
+    const root = document.documentElement;
+    const color = appSettings.themeColor || '#003594';
+    root.style.setProperty('--color-primary', color);
+    root.style.setProperty('--color-primary-dark', darkenColor(color, 40));
+    root.style.setProperty('--color-primary-light', lightenColor(color, 40));
+  }, [appSettings.themeColor]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('selloUser');
@@ -675,7 +761,7 @@ export default function App() {
       </main>
 
       {/* Modal Alta Precinto */}
-      {isNewSealModalOpen && <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-200"><div className="bg-custom-blue px-6 py-5 text-white font-black text-xs uppercase tracking-widest">Nuevo Precinto - {currentUser.city}</div><div className="p-8 space-y-6"><div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">ID Precinto</label><input type="text" className="w-full border border-slate-200 bg-slate-50 rounded-xl p-3.5 text-sm font-mono font-bold text-custom-blue outline-none uppercase" placeholder="Ej: BOG-4432" id="new-seal-id" /></div><div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Tipo</label><select className="w-full border border-slate-200 bg-slate-50 rounded-xl p-3.5 text-sm font-bold text-custom-blue outline-none appearance-none" id="new-seal-type">{appSettings.sealTypes.map(t => <option key={t} value={t}>{t}</option>)}</select></div><div className="flex gap-4 pt-6"><button onClick={() => setIsNewSealModalOpen(false)} className="flex-1 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Cancelar</button><button onClick={() => { const idEl = document.getElementById('new-seal-id') as HTMLInputElement; const typeEl = document.getElementById('new-seal-type') as HTMLSelectElement; const id = idEl.value.toUpperCase(); const type = typeEl.value; if (!id) return alert('ID obligatorio'); const now = new Date().toLocaleString('es-ES'); const success = handleAddSeal({ id, type, status: SealStatus.ENTRADA_INVENTARIO, creationDate: now, lastMovement: now, entryUser: currentUser.fullName, orderNumber: '-', containerId: '-', notes: 'Alta Sede', city: currentUser.city, history: [{ date: now, fromStatus: null, toStatus: SealStatus.ENTRADA_INVENTARIO, user: currentUser.fullName, details: `Alta inicial en ${currentUser.city}` }] }); if (success) { setIsNewSealModalOpen(false); setToast({message: "PRECINTO REGISTRADO", type: 'success'}); } }} className="flex-1 bg-custom-blue text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-xl hover:bg-black">Registrar</button></div></div></div></div>}
+      {isNewSealModalOpen && <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div className="bg-white rounded-2xl shadow-2xl w-full max-sm overflow-hidden border border-slate-200"><div className="bg-custom-blue px-6 py-5 text-white font-black text-xs uppercase tracking-widest">Nuevo Precinto - {currentUser.city}</div><div className="p-8 space-y-6"><div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">ID Precinto</label><input type="text" className="w-full border border-slate-200 bg-slate-50 rounded-xl p-3.5 text-sm font-mono font-bold text-custom-blue outline-none uppercase" placeholder="Ej: BOG-4432" id="new-seal-id" /></div><div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Tipo</label><select className="w-full border border-slate-200 bg-slate-50 rounded-xl p-3.5 text-sm font-bold text-custom-blue outline-none appearance-none" id="new-seal-type">{appSettings.sealTypes.map(t => <option key={t} value={t}>{t}</option>)}</select></div><div className="flex gap-4 pt-6"><button onClick={() => setIsNewSealModalOpen(false)} className="flex-1 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Cancelar</button><button onClick={() => { const idEl = document.getElementById('new-seal-id') as HTMLInputElement; const typeEl = document.getElementById('new-seal-type') as HTMLSelectElement; const id = idEl.value.toUpperCase(); const type = typeEl.value; if (!id) return alert('ID obligatorio'); const now = new Date().toLocaleString('es-ES'); const success = handleAddSeal({ id, type, status: SealStatus.ENTRADA_INVENTARIO, creationDate: now, lastMovement: now, entryUser: currentUser.fullName, orderNumber: '-', containerId: '-', notes: 'Alta Sede', city: currentUser.city, history: [{ date: now, fromStatus: null, toStatus: SealStatus.ENTRADA_INVENTARIO, user: currentUser.fullName, details: `Alta inicial en ${currentUser.city}` }] }); if (success) { setIsNewSealModalOpen(false); setToast({message: "PRECINTO REGISTRADO", type: 'success'}); } }} className="flex-1 bg-custom-blue text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-xl hover:bg-black">Registrar</button></div></div></div></div>}
 
       {/* Modal de Movimiento */}
       {isMoveFormOpen && selectedSeals.length > 0 && <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg border border-gray-200 overflow-hidden animate-in zoom-in duration-200"><div className="bg-custom-blue px-8 py-5 flex justify-between items-center text-white"><h3 className="text-[10px] font-black uppercase tracking-widest">{selectedSeals.length > 1 ? `GESTIÓN MASIVA: ${selectedSeals.length} UNIDADES` : `GESTIONAR: ${selectedSeals[0].id}`}</h3><button onClick={() => setIsMoveFormOpen(false)}>✕</button></div><div className="p-8 space-y-6">{targetStatus === selectedSeals[0].status ? <div className="space-y-4 text-center"><p className={`text-[10px] font-black uppercase tracking-widest ${getStatusTextColor(selectedSeals[0].status)}`}>Estado Actual: {selectedSeals[0].status.replace('_', ' ')}</p><div className="grid grid-cols-1 gap-2">{(selectedSeals[0].status === SealStatus.ENTRADA_INVENTARIO || selectedSeals[0].status === SealStatus.NO_INSTALADO) && <button onClick={() => setTargetStatus(SealStatus.ASIGNADO)} className="bg-sky-600 text-white p-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Mover Sello a Asignado</button>}{selectedSeals[0].status === SealStatus.ASIGNADO && <button onClick={() => setTargetStatus(SealStatus.ENTREGADO)} className="bg-amber-600 text-white p-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Mover Sello a Entregado</button>}{selectedSeals[0].status === SealStatus.ENTREGADO && (<><button onClick={() => setTargetStatus(SealStatus.INSTALADO)} className="bg-orange-600 text-white p-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Mover Sello a Instalado</button><button onClick={() => setTargetStatus(SealStatus.NO_INSTALADO)} className="bg-stone-500 text-white p-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Reportar No Instalado</button></>)}{selectedSeals[0].status === SealStatus.INSTALADO && <button onClick={() => setTargetStatus(SealStatus.SALIDA_FABRICA)} className="bg-gray-500 text-white p-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Mover Sello a Salida</button>}<button onClick={() => setTargetStatus(SealStatus.DESTRUIDO)} className="bg-red-600 text-white p-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest">Mover Sello a Destruido</button></div></div> : <div className="space-y-6"><div className="flex items-center justify-center gap-3 bg-slate-50 p-4 rounded-xl"><span className={`text-[9px] font-black uppercase px-2 py-1 rounded border ${getStatusStyles(selectedSeals[0].status).split('icon-bg-')[0]}`}>{selectedSeals[0].status.replace('_', ' ')}</span><ICONS.ArrowRightTiny className="text-slate-300" /><span className={`text-[9px] font-black uppercase px-2 py-1 rounded border shadow-sm ${targetStatus ? getStatusStyles(targetStatus).split('icon-bg-')[0] : ''}`}>{targetStatus?.replace('_', ' ')}</span></div><div className="max-h-[45vh] overflow-y-auto pr-2 space-y-4 custom-scrollbar">{(targetStatus === SealStatus.ASIGNADO || targetStatus === SealStatus.ENTREGADO) ? <div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Usuario Receptor:</label><input type="text" className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold text-custom-blue outline-none uppercase" value={moveData.requester} onChange={e => setMoveData({...moveData, requester: e.target.value.toUpperCase()})} placeholder="Nombre del receptor" /></div> : targetStatus === SealStatus.INSTALADO ? <><div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Placa Vehículo:</label><input type="text" className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-sm font-black font-mono text-custom-blue outline-none uppercase" value={moveData.vehiclePlate} onChange={e => setMoveData({...moveData, vehiclePlate: e.target.value.toUpperCase()})} placeholder="ABC-123" /></div><div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Trailer/Contenedor:</label><input type="text" className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-sm font-black font-mono text-custom-blue outline-none uppercase" value={moveData.trailerContainer} onChange={e => setMoveData({...moveData, trailerContainer: e.target.value.toUpperCase()})} placeholder="Nro Contenedor" /></div></> : targetStatus === SealStatus.NO_INSTALADO ? <div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Entregado sub:</label><input type="text" required className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold text-custom-blue outline-none uppercase" value={moveData.deliveredSub} onChange={e => setMoveData({...moveData, deliveredSub: e.target.value.toUpperCase()})} placeholder="Receptor secundario" /></div> : null}<div className="space-y-1.5"><label className="text-[10px] font-black text-custom-blue uppercase tracking-widest">Numero Transporte:</label><textarea className="w-full border border-slate-200 bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold text-custom-blue outline-none uppercase" value={moveData.observations} onChange={e => setMoveData({...moveData, observations: e.target.value.toUpperCase()})} placeholder="Motivo..." /></div></div><div className="flex gap-4 pt-4"><button type="button" onClick={() => setTargetStatus(selectedSeals[0]?.status || null)} className="flex-1 py-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Atrás</button><button onClick={handleConfirmMovement} className={`flex-1 text-white py-4 rounded-xl font-black text-[10px] uppercase shadow-xl ${targetStatus === SealStatus.DESTRUIDO ? 'bg-red-600' : 'bg-custom-blue'}`}>Confirmar Sello</button></div></div>}</div></div></div>}

@@ -18,6 +18,7 @@ export interface AppSettings {
   title: string;
   logo: string | null;
   sealTypes: string[];
+  themeColor: string; // Color principal del tema
 }
 
 export enum SealStatus {

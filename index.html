@@ -12,9 +12,9 @@
         theme: {
           extend: {
             colors: {
-              'custom-blue': '#003594',
-              'custom-blue-dark': '#002566',
-              'custom-blue-light': '#0048cc',
+              'custom-blue': 'var(--color-primary, #003594)',
+              'custom-blue-dark': 'var(--color-primary-dark, #002566)',
+              'custom-blue-light': 'var(--color-primary-light, #0048cc)',
             }
           }
         }
@@ -22,6 +22,11 @@
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
+        :root {
+          --color-primary: #003594;
+          --color-primary-dark: #002566;
+          --color-primary-light: #0048cc;
+        }
     </style>
 <script type="importmap">
 {
