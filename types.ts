@@ -18,7 +18,6 @@ export interface AppSettings {
   title: string;
   logo: string | null;
   sealTypes: string[];
-  themeColor: string; // New: Hex code for primary theme
 }
 
 export enum SealStatus {

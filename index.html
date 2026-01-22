@@ -12,26 +12,16 @@
         theme: {
           extend: {
             colors: {
-              'custom-blue': 'var(--brand-primary, #003594)',
-              'custom-blue-dark': 'var(--brand-dark, #002566)',
-              'custom-blue-light': 'var(--brand-light, #0048cc)',
+              'custom-blue': '#003594',
+              'custom-blue-dark': '#002566',
+              'custom-blue-light': '#0048cc',
             }
           }
         }
       }
     </script>
     <style>
-        :root {
-          --brand-primary: #003594;
-          --brand-dark: #002566;
-          --brand-light: #0048cc;
-        }
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Smooth transitions for theme changes */
-        .bg-custom-blue, .text-custom-blue, .border-custom-blue {
-          transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
     </style>
 <script type="importmap">
 {
