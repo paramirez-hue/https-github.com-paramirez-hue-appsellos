@@ -8,27 +8,27 @@ export interface User {
   id: string;
   username: string;
   fullName: string;
-  password?: string; // Añadido para manejo de acceso
+  password?: string;
   role: UserRole;
   organization: string;
-  city: string; // Sede asignada
+  city: string;
 }
 
 export interface AppSettings {
   title: string;
   logo: string | null;
   sealTypes: string[];
-  themeColor: string; // Color principal del tema
+  themeColor: string;
 }
 
 export enum SealStatus {
+  ENTRADA_INVENTARIO = 'ENTRADA_INVENTARIO',
+  ASIGNADO = 'ASIGNADO',
+  ENTREGADO = 'ENTREGADO',
+  INSTALADO = 'INSTALADO',
   SALIDA_FABRICA = 'SALIDA_FABRICA',
   NO_INSTALADO = 'NO_INSTALADO',
-  INSTALADO = 'INSTALADO',
-  ENTREGADO = 'ENTREGADO',
-  ENTRADA_INVENTARIO = 'ENTRADA_INVENTARIO',
-  DESTRUIDO = 'DESTRUIDO',
-  ASIGNADO = 'ASIGNADO'
+  DESTRUIDO = 'DESTRUIDO'
 }
 
 export interface MovementHistory {
@@ -37,6 +37,7 @@ export interface MovementHistory {
   toStatus: SealStatus;
   user: string;
   details: string;
+  fields?: Record<string, string>; // Almacena campos específicos del movimiento
 }
 
 export interface Seal {
@@ -46,11 +47,18 @@ export interface Seal {
   creationDate: string;
   lastMovement: string;
   entryUser: string;
-  orderNumber: string;
-  containerId: string;
-  notes: string;
-  city: string; // Ciudad a la que pertenece el precinto
+  city: string;
   history: MovementHistory[];
+  
+  // Campos dinámicos acumulados
+  orderNumber?: string;
+  containerId?: string;
+  vehiclePlate?: string;
+  assignedTo?: string;
+  deliveredTo?: string;
+  driverName?: string;
+  destination?: string;
+  observations?: string;
 }
 
 export interface FilterOptions {
