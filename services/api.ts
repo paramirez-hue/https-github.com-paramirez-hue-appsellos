@@ -65,7 +65,7 @@ export const ApiService = {
       const response = await fetch(`${API_BASE_URL}/settings`);
       return await response.json();
     } catch {
-      return JSON.parse(localStorage.getItem('selloSettings') || '{"title": "SelloMaster Pro", "logo": null, "sealTypes": ["Botella", "Cable", "Plástico"]}');
+      return JSON.parse(localStorage.getItem('selloSettings') || '{"GESTION DE SELLOS CNCH", "logo": null, "sealTypes": ["BOTELLA", "CORREA","GUAYA", "ADHESIVO"]}');
     }
   }
 };
