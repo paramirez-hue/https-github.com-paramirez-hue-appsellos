@@ -1,6 +1,6 @@
 {
   "name": "App sellos ",
-  "description": "Sistema para el manejo y control de inventario de precintos en Compañia Nacional de Chocolates",
+  "description": "Sistema avanzado para el manejo y control de inventario de precintos de seguridad (sellos)",
   "requestFramePermissions": [
     "camera"
   ]
