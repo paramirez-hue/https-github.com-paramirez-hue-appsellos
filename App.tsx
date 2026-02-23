@@ -467,7 +467,7 @@ const CityManagement: React.FC<{
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex justify-between items-end">
-        <div><h3 className="text-2xl font-black text-custom-blue uppercase tracking-tighter italic">Sedes Operativas</h3><p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Configuración Maestro de Puntos Logísticos</p></div>
+        <div><h3 className="text-2xl font-black text-custom-blue uppercase tracking-tighter italic">Sedes Operativas</h3><p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Configuración Sedes</p></div>
         <button onClick={() => { setEditingCity(null); setNewCityName(''); setIsModalOpen(true); }} className="flex items-center gap-2 bg-custom-blue text-white px-6 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-custom-blue-dark transition-all"><ICONS.Plus className="w-4 h-4" /> Registrar Ciudad</button>
       </div>
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -521,7 +521,7 @@ const UserManagement: React.FC<{
     if (!formData.username || !formData.password) return alert('Usuario y contraseña obligatorios');
     if (editingUser) onUpdateUser({ ...editingUser, ...formData });
     else {
-      const u: User = { ...formData, id: Math.random().toString(36).substr(2, 9), organization: 'SelloMaster Group' };
+      const u: User = { ...formData, id: Math.random().toString(36).substr(2, 9), organization: 'Nacional de Chocolates' };
       onAddUser(u);
     }
     setIsModalOpen(false); setEditingUser(null);
@@ -530,7 +530,7 @@ const UserManagement: React.FC<{
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex justify-between items-end">
-        <div><h3 className="text-2xl font-black text-custom-blue uppercase tracking-tighter italic">Personal Operativo</h3><p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Directorio Maestro de Accesos por Sede</p></div>
+        <div><h3 className="text-2xl font-black text-custom-blue uppercase tracking-tighter italic">Personal Operativo</h3><p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Directorio de Accesos por Sede</p></div>
         <button onClick={() => { setEditingUser(null); setIsModalOpen(true); }} className="flex items-center gap-2 bg-custom-blue text-white px-6 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-custom-blue-dark transition-all"><ICONS.Plus className="w-4 h-4" /> Registrar Usuario</button>
       </div>
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -672,7 +672,7 @@ const LoginScreen: React.FC<{ onLogin: (user: User) => void; users: User[]; sett
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('Dashboard');
   const [seals, setSeals] = useState<Seal[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [cities, setCities] = useState<string[]>(['BOGOTÁ', 'MEDELLÍN', 'CALI', 'BARRANQUILLA']);
@@ -687,11 +687,11 @@ export default function App() {
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [isDeleteModeActive, setIsDeleteModeActive] = useState(false);
   
-  const [appSettings, setAppSettings] = useState<AppSettings>({ title: 'SelloMaster Pro', logo: null, sealTypes: ['Botella', 'Cable', 'Plástico', 'Metálico'], themeColor: '#003594' });
+  const [appSettings, setAppSettings] = useState<AppSettings>({ title: 'GESTION DE SELLOS CNCH', logo: null, sealTypes: ['Botella', 'Guaya', 'Correa', 'Adhesivo'], themeColor: '#003594' });
   const fileExcelRef = useRef<HTMLInputElement>(null);
 
   // Apply theme colors to CSS variables
-  useEffect(() => {
+  useEffect(() =>
     const root = document.documentElement;
     const color = appSettings.themeColor || '#003594';
     root.style.setProperty('--color-primary', color);
