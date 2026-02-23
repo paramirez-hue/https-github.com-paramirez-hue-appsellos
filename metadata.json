@@ -1,6 +1,6 @@
 {
   "name": "App sellos ",
-  "description": "Sistema avanzado para el manejo y control de inventario de precintos de seguridad (sellos)",
+  "description": "description": "Sistema avanzado para el manejo y control de inventario de precintos de seguridad (sellos)",
   "requestFramePermissions": [
     "camera"
   ]
